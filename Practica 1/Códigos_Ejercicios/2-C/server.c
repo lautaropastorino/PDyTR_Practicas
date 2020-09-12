@@ -62,6 +62,8 @@ int main(int argc, char *argv[])
      bzero(buffer,1000000);
 
 	//LEE EL MENSAJE DEL CLIENTE
+     n = 0;
+     
      n = read(newsockfd,buffer,1000000);
      if (n < 0) error("ERROR reading from socket");
      printf("Message received correctlty\n");
