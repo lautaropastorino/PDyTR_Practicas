@@ -3,6 +3,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
+#include <stdlib.h>
 
 void error(char *msg)
 {
@@ -54,22 +55,32 @@ int main(int argc, char *argv[])
     printf("Generating message...\n");
     bzero(buffer,1000000);
     
-    //Populamos el buffer
+    // Generamos un número aleatorio para determinar el tamaño del mensaje
+    srand(time(NULL));   // Inicializamos la seed.
+    int r = (rand() % 999997) + 1;      // Obtenemos un número aleatorio entre 1 y 999.998
+
+    //Populamos el buffer con un mensaje de tamaño r
     int i;
-    for (i = 0; i < 1000000; i++) 
+    for (i = 0; i < r; i++) 
         buffer[i] = 'a';
     
+    // Agrego el caracter 'fin de string' para que strlen entienda que no sigue más el mensaje
+    //buffer[i+1] = '\0';
+    
 
-    printf("Message generated!\n");
+    printf("Mensaje de %d caracteres generado.\n", r);
 
     //ENVIA UN MENSAJE AL SOCKET
 	n = write(sockfd,buffer,strlen(buffer));
     if (n < 0) 
          error("ERROR writing to socket");
-    bzero(buffer,256);
+    printf("Mensaje enviado!\n");
+    bzero(buffer,1000000);
 	
     //ESPERA RECIBIR UNA RESPUESTA
-	n = read(sockfd,buffer,255);
+    n = read(sockfd,buffer,1000000);
+    printf("Respuesta recibida: %d\n", n);
+    
     if (n < 0) 
          error("ERROR reading from socket");
     
