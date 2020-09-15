@@ -62,11 +62,15 @@ int main(int argc, char *argv[])
      bzero(buffer,1000000);
 
 	//LEE EL MENSAJE DEL CLIENTE
-     // Cuando n sea 0 quiere decir que se acabó el mensaje
-     while ((n = read(newsockfd,buffer,1000000)) > 0) {
-          printf("N: %d\n", n);
+     // Cuando n sea f quiere decir que se acabó el mensaje
+     int cont = 0;
+     while (buffer[strlen(buffer)-1] != 'f') {
+          n = read(newsockfd,buffer,1000000);
           if (n < 0) error("ERROR reading from socket");
+          cont += n;
      }
+
+     printf("Mensaje de %d caracteres leido.\n", cont);
 
      
      printf("Message received correctly\n");
@@ -76,8 +80,9 @@ int main(int argc, char *argv[])
      printf("ultimos: %c - %c\n", buffer[strlen(buffer)-2], buffer[strlen(buffer)-1]);
 	 
 	 //RESPONDE AL CLIENTE
-     n = write(newsockfd,"I got your message",18);
-     printf("Write: %d\n", n);
+     bzero(buffer, 1000000);
+     strcpy(buffer, "I got your message");
+     n = write(newsockfd, buffer, strlen(buffer));
      if (n < 0) error("ERROR writing to socket");
      return 0; 
 }

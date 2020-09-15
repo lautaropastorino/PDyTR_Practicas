@@ -64,9 +64,8 @@ int main(int argc, char *argv[])
     for (i = 0; i < r; i++) 
         buffer[i] = 'a';
     
-    // Agrego el caracter 'fin de string' para que strlen entienda que no sigue más el mensaje
-    //buffer[i+1] = '\0';
-    
+    //caracter de fin para que el servidor sepa cuando dejar de leer
+    buffer[i] = 'f';
 
     printf("Mensaje de %d caracteres generado.\n", r);
 
@@ -79,11 +78,10 @@ int main(int argc, char *argv[])
 	
     //ESPERA RECIBIR UNA RESPUESTA
     n = read(sockfd,buffer,1000000);
-    printf("Respuesta recibida: %d\n", n);
     
     if (n < 0) 
          error("ERROR reading from socket");
     
-	printf("%s\n",buffer);
+	printf("Respuesta: %s\n",buffer);
     return 0;
 }
