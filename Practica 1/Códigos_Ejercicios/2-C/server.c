@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
      // Cuando n sea f quiere decir que se acabó el mensaje
      int cont = 0;
      while (buffer[strlen(buffer)-1] != 'f') {
-          n = read(newsockfd,buffer,1000000);
+          n = read(newsockfd, &buffer[cont], 1000000);
           if (n < 0) error("ERROR reading from socket");
           cont += n;
      }
