@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
 
     //calculamos la diferencia entre los ciclos de reloj y la dividimos por la cantidad de ciclos por seg
     printf("Comunicación realizada en %f segundos\n", (double)(end - begin) / CLOCKS_PER_SEC);
+    printf("Tiempo de cada comunicación: %f\n", ((double)(end - begin) / CLOCKS_PER_SEC) / 2);
     
 	printf("Respuesta: %s\n",buffer);
     return 0;

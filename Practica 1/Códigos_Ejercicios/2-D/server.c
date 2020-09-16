@@ -65,21 +65,18 @@ int main(int argc, char *argv[])
      // Cuando n sea f quiere decir que se acabó el mensaje
      int cont = 0;
      while (buffer[strlen(buffer)-1] != 'f') {
-          n = read(newsockfd,buffer,1000000);
+          n = read(newsockfd, &buffer[cont], 1000000);
           if (n < 0) error("ERROR reading from socket");
           cont += n;
      }
 
      //RESPONDE AL CLIENTE
-     n = write(newsockfd,"I got your message",18);
+     bzero(buffer, 1000000);
+     strcpy(buffer, "I got your message");
+     n = write(newsockfd, buffer, strlen(buffer));
      if (n < 0) error("ERROR writing to socket");
 
      printf("Mensaje de %d caracteres leido.\n", cont);
-     
-     //Muestro los primeros datos del buffer
-     printf("Primeros: %c - %c\n", buffer[0], buffer[1]);
-     //Muestro los últimos datos del buffer 
-     printf("ultimos: %c - %c\n", buffer[strlen(buffer)-2], buffer[strlen(buffer)-1]);
 
      return 0; 
 }
