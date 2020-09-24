@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
     serv_addr.sin_port = htons(portno);
 	
-	//DESCRIPTOR - DIRECCION - TAMAÑO DIRECCION
+    //DESCRIPTOR - DIRECCION - TAMAÑO DIRECCION
     if (connect(sockfd, &serv_addr, sizeof(serv_addr)) < 0) 
         error("ERROR connecting");
     
@@ -59,35 +59,50 @@ int main(int argc, char *argv[])
     srand(time(NULL));   // Inicializamos la seed.
     int r = (rand() % 999997) + 1;      // Obtenemos un número aleatorio entre 1 y 999.998
 
-    //Populamos el buffer con un mensaje de tamaño r
-    int i;
-    for (i = 0; i < r; i++) 
-        buffer[i] = 'a';
-    
-    //caracter de fin para que el servidor sepa cuando dejar de leer
-    buffer[i] = 'f';
     
 
     printf("Mensaje de %d caracteres generado.\n", r);
 
-    clock_t begin = clock(); //Comienza la comunicación
-    //ENVIA UN MENSAJE AL SOCKET
-	n = write(sockfd,buffer,strlen(buffer));
-    if (n < 0) 
-         error("ERROR writing to socket");
+    double tot = 0.0;
+    double totMedia = 0.0;
 
-    bzero(buffer,1000000);
+    for (int i = 0; i < 1000; i++) {
+        
+        //Populamos el buffer con un mensaje de tamaño r
+        int j;
+        for (j = 0; j < r; j++) 
+            buffer[j] = 'a';
+        
+        //caracter de fin para que el servidor sepa cuando dejar de leer
+        buffer[j] = 'f';
 
-    //ESPERA RECIBIR UNA RESPUESTA
-    n = read(sockfd,buffer,1000000);
-    if (n < 0) 
-         error("ERROR reading from socket");
-    clock_t end = clock(); //Finaliza la comunicación
+        clock_t begin = clock(); //Comienza la comunicación
+        //ENVIA UN MENSAJE AL SOCKET
+        n = write(sockfd,buffer,strlen(buffer));
+        if (n < 0) 
+            error("ERROR writing to socket");
 
-    //calculamos la diferencia entre los ciclos de reloj y la dividimos por la cantidad de ciclos por seg
-    printf("Comunicación realizada en %f segundos\n", (double)(end - begin) / CLOCKS_PER_SEC);
-    printf("Tiempo de cada comunicación: %f\n", ((double)(end - begin) / CLOCKS_PER_SEC) / 2);
+        bzero(buffer,1000000);
+
+        //ESPERA RECIBIR UNA RESPUESTA
+        n = read(sockfd,buffer,1000000);
+        if (n < 0) 
+            error("ERROR reading from socket");
+        
+        clock_t end = clock(); //Finaliza la comunicación
+        
+        double comu = (double)(end - begin) / CLOCKS_PER_SEC;
+
+        tot += comu;
+        totMedia += comu/2;
+
+        if (i % 10 == 0)
+            printf("%f\n", comu);
+    }
     
-	printf("Respuesta: %s\n",buffer);
+
+    printf("Promedio por comunicación completa: %f segundos\n", tot/1000);
+    printf("Promedio por read/write por separado: %f segundos\n", totMedia/1000);
+    
     return 0;
 }

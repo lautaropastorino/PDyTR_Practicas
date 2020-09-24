@@ -47,36 +47,40 @@ int main(int argc, char *argv[])
 			  
 	 //SETEA LA CANTIDAD QUE PUEDEN ESPERAR MIENTRAS SE MANEJA UNA CONEXION		  
      listen(sockfd,5);
-	 
-	 // SE BLOQUEA A ESPERAR UNA CONEXION
+	
+     // SE BLOQUEA A ESPERAR UNA CONEXION
      clilen = sizeof(cli_addr);
      newsockfd = accept(sockfd, 
-                 (struct sockaddr *) &cli_addr, 
-                 &clilen);
-				 
+               (struct sockaddr *) &cli_addr, 
+               &clilen);
+                    
      //DEVUELVE UN NUEVO DESCRIPTOR POR EL CUAL SE VAN A REALIZAR LAS COMUNICACIONES
-	 if (newsockfd < 0) 
+     if (newsockfd < 0) 
           error("ERROR on accept");
-          
-     // Limpio el buffer poniendo todos 0 
-     bzero(buffer,1000000);
 
-	//LEE EL MENSAJE DEL CLIENTE
-     // Cuando n sea f quiere decir que se acabó el mensaje
-     int cont = 0;
-     while (buffer[strlen(buffer)-1] != 'f') {
-          n = read(newsockfd, &buffer[cont], 1000000);
-          if (n < 0) error("ERROR reading from socket");
-          cont += n;
+     int i = 1000;
+
+     while (i > 0) {
+          // Limpio el buffer poniendo todos 0 
+          bzero(buffer,1000000);
+
+          //LEE EL MENSAJE DEL CLIENTE
+          // Cuando n sea f quiere decir que se acabó el mensaje
+          int cont = 0;
+          while (buffer[strlen(buffer)-1] != 'f') {
+               n = read(newsockfd, &buffer[cont], 1000000);
+               if (n < 0) error("ERROR reading from socket");
+               cont += n;
+          }
+
+          //RESPONDE AL CLIENTE
+          bzero(buffer, 1000000);
+          strcpy(buffer, "I got your message");
+          n = write(newsockfd, buffer, strlen(buffer));
+          if (n < 0) error("ERROR writing to socket");
+          i--;
      }
 
-     //RESPONDE AL CLIENTE
-     bzero(buffer, 1000000);
-     strcpy(buffer, "I got your message");
-     n = write(newsockfd, buffer, strlen(buffer));
-     if (n < 0) error("ERROR writing to socket");
-
-     printf("Mensaje de %d caracteres leido.\n", cont);
 
      return 0; 
 }
