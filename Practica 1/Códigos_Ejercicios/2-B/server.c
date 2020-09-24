@@ -70,12 +70,8 @@ int main(int argc, char *argv[])
      //Muestro los últimos datos del buffer 
      printf("ultimos: %c - %c\n", buffer[1000000-2], buffer[1000000-1]);
 
-     char car = 'a';
      int cont = 0;
-     while (car == 'a') {
-          cont++;
-          car = buffer[cont];
-     }
+     while (buffer[cont] == 'a') cont++;
 
      printf("Se leyeron %d caracteres \"a\" de 1000000 enviados.\n", cont);
 	 
