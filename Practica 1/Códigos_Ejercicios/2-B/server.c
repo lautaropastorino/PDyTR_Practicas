@@ -69,6 +69,15 @@ int main(int argc, char *argv[])
      printf("Primeros: %c - %c\n", buffer[0], buffer[1]);
      //Muestro los últimos datos del buffer 
      printf("ultimos: %c - %c\n", buffer[1000000-2], buffer[1000000-1]);
+
+     char car = 'a';
+     int cont = 0;
+     while (car == 'a') {
+          cont++;
+          car = buffer[cont];
+     }
+
+     printf("Se leyeron %d caracteres \"a\" de 1000000 enviados.\n", cont);
 	 
 	 //RESPONDE AL CLIENTE
      n = write(newsockfd,"I got your message",18);
