@@ -12,29 +12,32 @@ public class AskRemote
 		/* Look for hostname and msg length in the command line */
 		if (args.length != 5)
 		{
-			System.out.println("5 arguments needed:"
-				+ "1: (remote) hostname"
-				+ "2: operation (read/write)"
-				+ "3: filename"
-				+ "4: length"
+			System.out.println("5 arguments needed: \n"
+				+ "1: (remote) hostname "
+				+ "2: operation (read/write) "
+				+ "3: filename "
+				+ "4: length "
 				+ "5: position/buffer");
 			System.exit(1);
 		}
 		try {
 			String rname = "//" + args[0] + ":" + Registry.REGISTRY_PORT + "/remote";
 			IfaceRemoteClass remote = (IfaceRemoteClass) Naming.lookup(rname);
-			String filename = args[3];
-			int bufferlength = Integer.parseInt(args[4]);
+			String filename = args[2];
+			int bufferlength = Integer.parseInt(args[3]);
 			if ("read".equals(args[1]))
 			{
-				int position = Integer.parseInt(args[5]);
+				int position = Integer.parseInt(args[4]);
 				byte[] buffer = remote.readFile(filename, position, bufferlength);
-				System.out.println("Bytes read: " + buffer.length());
-				System.out.println("Read: " + buffer);
+				//transformo los bytes a string
+				String s = new String(buffer, "ISO-8859-1");
+				// le saco los blanco que pueden sobrar al final (si es que se acabo el archivo)
+				System.out.println("Bytes read: " + s.trim().length());
+				System.out.println("Read: " + s);
 			}
 			else if ("write".equals(args[1]))
 			{
-                                byte[] buffer;
+				byte[] buffer = new byte[10];
 				// IMPLEMENTAR BUSQUEDA DE BUFFER (arg[5])
 				int byteswritten = remote.writeFile(filename, bufferlength, buffer);
 				System.out.println("Bytes written: " + byteswritten);

@@ -20,14 +20,24 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 	/* Remote methods implementation */
 	public byte[] readFile(String filename, int position, int bytelength) throws RemoteException
 	{	
-                byte[] data = new byte[0];
+		System.out.println("Pedido de lectura recibido.");
+		// Me creo un arreglo de los bytes que voy a leer de a lo sumo bytelength de largo.
+        byte[] data = new byte[bytelength];
 		try {
-                    //IMPLEMENTAR DIRECCIÓN BASE
-                    File file = new File(filename);
-                    int filesize = getFileSizeBytes(file);
+                    //IMPLEMENTAR DIRECCION BASE
+					File file = new File(filename);
+					// Obtengo el contenido del archivo con ese nombre
+					byte[] fileContents = Files.readAllBytes(file.toPath()); 
+					// Obtengo el tamanio del archivo
+                    long filesize = file.length();
                     if (filesize >= position) {
-                        int to = Math.min(filesize, (bytelength + position));
-                        data = Arrays.copyOfRange(Files.readAllBytes(file.toPath()), position, to);
+						// Decido si voy a leer hasta el final del archivo o hasta la posicion + bytelength
+                        long end = filesize < (position + bytelength) ? filesize : (position + bytelength);
+						int j = 0;
+						for (int i = position; i < end; i++) {
+							data[j] = fileContents[i];
+							j++;
+						}
                     }
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -36,6 +46,6 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 	}
 	public int writeFile(String filename, int bytelength, byte[] data) throws RemoteException
 	{
-
+		return 0;
 	}
 }
