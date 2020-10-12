@@ -1,10 +1,7 @@
-/*
-* AskRemote.java
-* a) Looks up for the remote object
-* b) "Makes" the RMI
-*/
 import java.rmi.Naming; /* lookup */
 import java.rmi.registry.Registry; /* REGISTRY_PORT */
+
+
 public class AskRemote
 {
 	public static void main(String[] args)
@@ -37,13 +34,17 @@ public class AskRemote
 			}
 			else if ("write".equals(args[1]))
 			{
-				byte[] buffer = new byte[10];
+				String buffer = new String(args[4]);
+				
+				/* 
+				Uso del write:
+				Java AskRemote localhost write nombreArchivo unNumeroQueNoHaceNada "String entre comillas"
+				*/
+
 				// IMPLEMENTAR BUSQUEDA DE BUFFER (arg[5])
 				int byteswritten = remote.writeFile(filename, bufferlength, buffer);
 				System.out.println("Bytes written: " + byteswritten);
 			}
-			// remote.sendThisBack(buffer);
-			// System.out.println("Done");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
