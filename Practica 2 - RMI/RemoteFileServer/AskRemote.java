@@ -56,7 +56,7 @@ public class AskRemote
 			}
 			else if ("ejercicio3b".equals(args[1]))
 			{
-				byte[] remoto = remote.readFile("ejercicio3b", 0, 100);
+				byte[] remoto = remote.readFile("ejercicio3b", 0, 20000);
 
 				// Creo el archivo para la copia local
 				File file = new File("copiaLocal");
@@ -69,8 +69,8 @@ public class AskRemote
 				String contenido = new String(remoto, "ISO-8859-1").trim();
 
 				// Escribo en la copia local
-				SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.WRITE);
-				ByteBuffer buffer = ByteBuffer.wrap(contenido.getBytes(StandardCharsets.ISO_8859_1));
+				SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.APPEND);
+				ByteBuffer buffer = ByteBuffer.wrap((contenido + String.format("%n")).getBytes(StandardCharsets.ISO_8859_1));
 				byteChannel.write(buffer);
 
 				remote.writeFile("copiaRemota", 100, contenido);

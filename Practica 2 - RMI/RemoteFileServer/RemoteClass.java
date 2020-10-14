@@ -65,7 +65,8 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 			// Creo un canal de bytes en modo APPEND
 			SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.APPEND);
 			// Genero un ByteBuffer a partir del String recibido para poder escribirlo
-			ByteBuffer buffer = ByteBuffer.wrap(data.getBytes(StandardCharsets.ISO_8859_1));
+			// Al String le agrego una newline al final para seguir el estandar POSIX
+			ByteBuffer buffer = ByteBuffer.wrap((data + String.format("%n")).getBytes(StandardCharsets.ISO_8859_1));
 			// Lo escribo y me guardo la cantidad de bytes escritos
 			escritos = byteChannel.write(buffer);
 		} catch (Exception e) {
