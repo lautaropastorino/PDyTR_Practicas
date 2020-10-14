@@ -61,6 +61,12 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 			e.printStackTrace();
 		}
 
+		if (bytelength > data.length()) {
+			bytelength = data.length();
+		}
+		// Corto el string a la cantidad enviada como parametro
+		data = data.substring(0, bytelength);
+
 		try {
 			// Creo un canal de bytes en modo APPEND
 			SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.APPEND);
