@@ -8,19 +8,30 @@ import java.nio.charset.*;
 
 public class AskRemote
 {
-	public static void main(String[] args)
-	{
-		/* Look for hostname and msg length in the command line */
-		if (args.length != 2 && "ejercicio3b".equals(args[1]) && args.length != 5)
-		{
-			System.out.println("5 o 2 parametros requeridos: \n"
+
+	private static void errorDeParametros() {
+		System.out.println("5 o 2 parametros requeridos: \n"
 				+ "1: (remote) hostname "
 				+ "2: operation (read/write/ejercicio3b) "
 				+ "3: filename "
 				+ "4: length "
 				+ "5: position/buffer");
-			System.exit(1);
+		System.exit(1);
+	}
+	public static void main(String[] args)
+	{
+		/* Look for hostname and msg length in the command line */
+		if (args.length != 2 && args.length != 5) {
+			errorDeParametros();
 		}
+		if (args.length != 2 && "ejercicio3b".equals(args[1]))
+		{
+			errorDeParametros();
+		}
+		if (args.length != 5 && ("write".equals(args[1]) || "read".equals(args[1]))) {
+			errorDeParametros();
+		}
+
 		try {
 			String rname = "//" + args[0] + ":" + Registry.REGISTRY_PORT + "/remote";
 			IfaceRemoteClass remote = (IfaceRemoteClass) Naming.lookup(rname);
