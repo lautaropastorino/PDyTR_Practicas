@@ -84,7 +84,7 @@ public class AskRemote
 				ByteBuffer buffer = ByteBuffer.wrap((contenido + String.format("%n")).getBytes(StandardCharsets.ISO_8859_1));
 				byteChannel.write(buffer);
 
-				remote.writeFile("copiaRemota", 100, contenido);
+				remote.writeFile("copiaRemota", 20000, contenido);
 
 			}
 		} catch (Exception e) {
