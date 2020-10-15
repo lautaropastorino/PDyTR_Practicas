@@ -17,13 +17,14 @@ super();
 /* Remote method implementation */
 public String sendThisBack(String data) throws RemoteException
 {
-try{
 System.out.println("Entrando " + data);
-Thread.sleep(5000);
-System.out.println("Saliendo " + data);
-} catch (InterruptedException e) {
-System.err.format("IOException: %s%n", e);
+for (int i = 0; i < 1000000; i++) {
+if ( i % 10 == 0)
+{
+;
 }
+}
+System.out.println("Saliendo " + data);
 return data;
 }
 }
