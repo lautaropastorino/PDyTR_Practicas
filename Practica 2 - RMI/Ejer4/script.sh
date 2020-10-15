@@ -1,6 +1,5 @@
 #!/bin/sh
 
-java StartRemoteObject &
 java AskRemote localhost 1 &
 java AskRemote localhost 2 &
 java AskRemote localhost 3 &
