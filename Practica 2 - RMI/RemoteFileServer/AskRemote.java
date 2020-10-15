@@ -53,7 +53,7 @@ public class AskRemote
 				}
 				else if ("write".equals(args[1]))
 				{
-					String buffer = new String(args[4]);
+					byte[] buffer = new String(args[4]).getBytes(StandardCharsets.ISO_8859_1);
 					
 					/* 
 					Uso del write:
@@ -67,25 +67,25 @@ public class AskRemote
 			}
 			else if ("ejercicio3b".equals(args[1]))
 			{
-				byte[] remoto = remote.readFile("ejercicio3b", 0, 20000);
+				// byte[] remoto = remote.readFile("ejercicio3b", 0, 20000);
 
-				// Creo el archivo para la copia local
-				File file = new File("copiaLocal");
-				try {
-					file.createNewFile();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				// // Creo el archivo para la copia local
+				// File file = new File("copiaLocal");
+				// try {
+				// 	file.createNewFile();
+				// } catch (Exception e) {
+				// 	e.printStackTrace();
+				// }
 
-				String contenido = new String(remoto, "ISO-8859-1").trim();
+				// String contenido = new String(remoto, "ISO-8859-1").trim();
 
-				// Escribo en la copia local
-				SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.APPEND);
-				ByteBuffer buffer = ByteBuffer.wrap((contenido + String.format("%n")).getBytes(StandardCharsets.ISO_8859_1));
-				byteChannel.write(buffer);
+				// // Escribo en la copia local
+				// SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.APPEND);
+				// ByteBuffer buffer = ByteBuffer.wrap((contenido + String.format("%n")).getBytes(StandardCharsets.ISO_8859_1));
+				// byteChannel.write(buffer);
 
-				remote.writeFile("copiaRemota", 20000, contenido);
-
+				// remote.writeFile("copiaRemota", 20000, contenido);
+				;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

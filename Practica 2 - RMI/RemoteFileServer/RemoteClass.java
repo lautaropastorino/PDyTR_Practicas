@@ -5,6 +5,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.*;
 import java.nio.charset.*;
+import java.io.FileOutputStream;
+import java.util.Arrays; 
 
 /* This class implements the interface with remote methods */
 public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass {
@@ -20,7 +22,7 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 		// Me creo un arreglo de los bytes que voy a leer de a lo sumo bytelength de largo.
 		byte[] data = new byte[bytelength];
 
-		File file = new File(filename);
+		File file = new File("serverFS/"+filename);
 		if (!file.exists()) {
 			System.out.println("El archivo no existe");
 			return data;
@@ -48,11 +50,11 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 		return data;
 	}
 
-	public int writeFile(String filename, int bytelength, String data) throws RemoteException {
+	public int writeFile(String filename, int bytelength, byte[] data) throws RemoteException {
 		System.out.println("Pedido de escritura recibido.");
 
 		int escritos = 0;
-		File file = new File(filename);
+		File file = new File("serverFS/"+filename);
 
 		try {
 			// Si no existe el archivo lo creo
@@ -61,21 +63,20 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 			e.printStackTrace();
 		}
 
-		if (bytelength > data.length()) {
-			bytelength = data.length();
+		if (bytelength < data.length) {
+			data = Arrays.copyOfRange(data, 0, bytelength);
 		}
-		// Corto el string a la cantidad enviada como parametro
-		data = data.substring(0, bytelength);
-
+		
 		try {
-			// Creo un canal de bytes en modo APPEND
-			SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.APPEND);
-			// Genero un ByteBuffer a partir del String recibido para poder escribirlo
-			// Al String le agrego una newline al final para seguir el estandar POSIX
-			ByteBuffer buffer = ByteBuffer.wrap((data + String.format("%n")).getBytes(StandardCharsets.ISO_8859_1));
-			// Lo escribo y me guardo la cantidad de bytes escritos
-			escritos = byteChannel.write(buffer);
+			FileOutputStream out=new FileOutputStream(file, true);
+			
+			out.write(data);
+			out.flush();
+			out.close();
+			escritos = data.length;
+	 
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 		
