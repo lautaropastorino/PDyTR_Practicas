@@ -31,7 +31,7 @@ public class AskRemote
 	public static void main(String[] args)
 	{
 		/* Look for hostname and msg length in the command line */
-		if (args.length != 5) {
+		if (args.length != 5 && args.length != 3) {
 			errorDeParametros();
 		}
 		if ((!"write".equals(args[1]) && !"read".equals(args[1]) && !"copy".equals(args[1]))) {
@@ -44,10 +44,10 @@ public class AskRemote
 			IfaceRemoteClass remote = (IfaceRemoteClass) Naming.lookup(rname);
 			
 			String filename = args[2];
-			int bufferlength = Integer.parseInt(args[3]);
 
 			if ("read".equals(args[1]))
 			{
+				int bufferlength = Integer.parseInt(args[3]);
 				int position = Integer.parseInt(args[4]);
 				byte[] buffer = remote.readFile(filename, position, bufferlength);
 				//transformo los bytes a string
@@ -57,15 +57,16 @@ public class AskRemote
 			}
 			else if ("write".equals(args[1]))
 			{
+				int bufferlength = Integer.parseInt(args[3]);
 				byte[] buffer = new String(args[4]).getBytes(StandardCharsets.ISO_8859_1);
 				int byteswritten = remote.writeFile(filename, bufferlength, buffer);
 				System.out.println("Bytes written: " + byteswritten);
 			}
 			else if ("copy".equals(args[1]))
 			{
-				int position = Integer.parseInt(args[4]);
+				int position = 0;
 				byte[] dataRead = remote.readFile(filename, position, bufferSize);
-				int leidos = lastIndex(dataRead);
+				int leidos = dataRead.length;
 
 				if (leidos == 0) {
 					System.out.println("El archivo no existe...");
@@ -78,15 +79,15 @@ public class AskRemote
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				FileOutputStream localWrite = new FileOutputStream(file, true);
+				FileOutputStream localWrite = new FileOutputStream(file);
 				
 				
-				while (leidos > 0 && position <= bufferlength) {
+				while (leidos > 0) {
 					localWrite.write(dataRead);
 					remote.writeFile("CopyOf" + filename, leidos, dataRead);
 					position += leidos;
 					dataRead = remote.readFile(filename, position, bufferSize);
-					leidos = lastIndex(dataRead);
+					leidos = dataRead.length;
 				}
 
 				localWrite.flush();
