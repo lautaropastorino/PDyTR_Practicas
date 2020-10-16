@@ -1,6 +1,7 @@
 import java.rmi.Naming; /* lookup */
 import java.rmi.registry.Registry; /* REGISTRY_PORT */
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.*;
@@ -8,84 +9,89 @@ import java.nio.charset.*;
 
 public class AskRemote
 {
+	private static final int bufferSize = 1024;
 
 	private static void errorDeParametros() {
 		System.out.println("5 o 2 parametros requeridos: \n"
 				+ "1: (remote) hostname "
-				+ "2: operation (read/write/ejercicio3b) "
-				+ "3: filename "
-				+ "4: length "
-				+ "5: position/buffer");
+				+ "2: operacion (read/write/copy) "
+				+ "3: nombreArchivo "
+				+ "4: cantidadDeBytes "
+				+ "5: posicion/dataSource");
 		System.exit(1);
+	}
+
+	private static int lastIndex(byte[] b) {
+		int i = 0;
+		while (i < b.length && b[i] != 0) {
+			i++;
+		}
+		return i;
 	}
 	public static void main(String[] args)
 	{
 		/* Look for hostname and msg length in the command line */
-		if (args.length != 2 && args.length != 5) {
+		if (args.length != 5) {
 			errorDeParametros();
 		}
-		if (args.length != 2 && "ejercicio3b".equals(args[1]))
-		{
-			errorDeParametros();
-		}
-		if (args.length != 5 && ("write".equals(args[1]) || "read".equals(args[1]))) {
+		if ((!"write".equals(args[1]) && !"read".equals(args[1]) && !"copy".equals(args[1]))) {
 			errorDeParametros();
 		}
 
 		try {
+
 			String rname = "//" + args[0] + ":" + Registry.REGISTRY_PORT + "/remote";
 			IfaceRemoteClass remote = (IfaceRemoteClass) Naming.lookup(rname);
+			
+			String filename = args[2];
+			int bufferlength = Integer.parseInt(args[3]);
 
-			if (args.length != 2) 
+			if ("read".equals(args[1]))
 			{
-				String filename = args[2];
-				int bufferlength = Integer.parseInt(args[3]);
-
-				if ("read".equals(args[1]))
-				{
-					int position = Integer.parseInt(args[4]);
-					byte[] buffer = remote.readFile(filename, position, bufferlength);
-					//transformo los bytes a string
-					String s = new String(buffer, "ISO-8859-1");
-					// le saco los blanco que pueden sobrar al final (si es que se acabo el archivo)
-					System.out.println("Bytes read: " + s.trim().length());
-					System.out.println("Read: " + s);
-				}
-				else if ("write".equals(args[1]))
-				{
-					byte[] buffer = new String(args[4]).getBytes(StandardCharsets.ISO_8859_1);
-					
-					/* 
-					Uso del write:
-					Java AskRemote localhost write nombreArchivo unNumeroQueNoHaceNada "String entre comillas"
-					*/
-
-					// IMPLEMENTAR BUSQUEDA DE BUFFER (arg[5])
-					int byteswritten = remote.writeFile(filename, bufferlength, buffer);
-					System.out.println("Bytes written: " + byteswritten);
-				}
+				int position = Integer.parseInt(args[4]);
+				byte[] buffer = remote.readFile(filename, position, bufferlength);
+				//transformo los bytes a string
+				String s = new String(buffer, "ISO-8859-1");
+				// le saco los blanco que pueden sobrar al final (si es que se acabo el archivo)
+				System.out.println("Bytes read: " + s.trim().length());
 			}
-			else if ("ejercicio3b".equals(args[1]))
+			else if ("write".equals(args[1]))
 			{
-				// byte[] remoto = remote.readFile("ejercicio3b", 0, 20000);
+				byte[] buffer = new String(args[4]).getBytes(StandardCharsets.ISO_8859_1);
+				int byteswritten = remote.writeFile(filename, bufferlength, buffer);
+				System.out.println("Bytes written: " + byteswritten);
+			}
+			else if ("copy".equals(args[1]))
+			{
+				int position = Integer.parseInt(args[4]);
+				byte[] dataRead = remote.readFile(filename, position, bufferSize);
+				int leidos = lastIndex(dataRead);
 
-				// // Creo el archivo para la copia local
-				// File file = new File("copiaLocal");
-				// try {
-				// 	file.createNewFile();
-				// } catch (Exception e) {
-				// 	e.printStackTrace();
-				// }
+				if (leidos == 0) {
+					System.out.println("El archivo no existe...");
+					System.exit(0);
+				}
 
-				// String contenido = new String(remoto, "ISO-8859-1").trim();
+				File file = new File("clientFS/"+filename);
+				try {
+					file.createNewFile();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				FileOutputStream localWrite = new FileOutputStream(file, true);
+				
+				
+				while (leidos > 0 && position <= bufferlength) {
+					localWrite.write(dataRead);
+					remote.writeFile("CopyOf" + filename, leidos, dataRead);
+					position += leidos;
+					dataRead = remote.readFile(filename, position, bufferSize);
+					leidos = lastIndex(dataRead);
+				}
 
-				// // Escribo en la copia local
-				// SeekableByteChannel byteChannel = Files.newByteChannel(file.toPath(), StandardOpenOption.APPEND);
-				// ByteBuffer buffer = ByteBuffer.wrap((contenido + String.format("%n")).getBytes(StandardCharsets.ISO_8859_1));
-				// byteChannel.write(buffer);
+				localWrite.flush();
+				localWrite.close();
 
-				// remote.writeFile("copiaRemota", 20000, contenido);
-				;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

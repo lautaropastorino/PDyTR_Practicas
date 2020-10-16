@@ -23,7 +23,7 @@ public class RemoteClass extends UnicastRemoteObject implements IfaceRemoteClass
 		byte[] data = new byte[bytelength];
 
 		File file = new File("serverFS/"+filename);
-		if (!file.exists()) {
+		if (!Files.isRegularFile(file.toPath())) {
 			System.out.println("El archivo no existe");
 			return data;
 		}
