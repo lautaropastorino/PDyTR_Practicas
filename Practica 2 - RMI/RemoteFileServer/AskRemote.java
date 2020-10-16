@@ -9,7 +9,7 @@ import java.nio.charset.*;
 
 public class AskRemote
 {
-	private static final int bufferSize = 1024;
+	private static final int bufferSize = 4096;
 
 	private static void errorDeParametros() {
 		System.out.println("5 o 2 parametros requeridos: \n"
@@ -21,13 +21,6 @@ public class AskRemote
 		System.exit(1);
 	}
 
-	private static int lastIndex(byte[] b) {
-		int i = 0;
-		while (i < b.length && b[i] != 0) {
-			i++;
-		}
-		return i;
-	}
 	public static void main(String[] args)
 	{
 		/* Look for hostname and msg length in the command line */
