@@ -24,6 +24,7 @@ pdytr/ejercicio4/grpc/FtpServiceImpl$1.class
 io/grpc/ejercicio4/ftp/EscribirResponse$1.class
 io/grpc/ejercicio4/ftp/FtpServiceProto.class
 io/grpc/ejercicio4/ftp/LeerResponse$Builder.class
+pdytr/ejercicio4/grpc/Client.class
 io/grpc/ejercicio4/ftp/EscribirRequest$Builder.class
 io/grpc/ejercicio4/ftp/FtpServiceGrpc$FtpServiceImplBase.class
 io/grpc/ejercicio4/ftp/FtpServiceGrpc$1.class

@@ -47,7 +47,7 @@ public final class FtpServiceProto {
       "c\"D\n\013LeerRequest\022\017\n\007archivo\030\001 \001(\t\022\020\n\010pos" +
       "icion\030\002 \001(\005\022\022\n\nbytesALeer\030\003 \001(\005\"F\n\014LeerR" +
       "esponse\022\r\n\005bytes\030\001 \001(\014\022\022\n\nbytesALeer\030\002 \001" +
-      "(\005\022\023\n\013byetsLeidos\030\003 \001(\005\"H\n\017EscribirReque" +
+      "(\005\022\023\n\013bytesLeidos\030\003 \001(\005\"H\n\017EscribirReque" +
       "st\022\017\n\007archivo\030\001 \001(\t\022\026\n\016bytesAEscribir\030\002 " +
       "\001(\005\022\014\n\004data\030\003 \001(\014\")\n\020EscribirResponse\022\025\n" +
       "\rbytesEscritos\030\001 \001(\0052\276\001\n\nFtpService\022Q\n\004L" +
@@ -73,7 +73,7 @@ public final class FtpServiceProto {
     internal_static_pdytr_ejercicio4_grpc_LeerResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_pdytr_ejercicio4_grpc_LeerResponse_descriptor,
-        new java.lang.String[] { "Bytes", "BytesALeer", "ByetsLeidos", });
+        new java.lang.String[] { "Bytes", "BytesALeer", "BytesLeidos", });
     internal_static_pdytr_ejercicio4_grpc_EscribirRequest_descriptor =
       getDescriptor().getMessageTypes().get(2);
     internal_static_pdytr_ejercicio4_grpc_EscribirRequest_fieldAccessorTable = new

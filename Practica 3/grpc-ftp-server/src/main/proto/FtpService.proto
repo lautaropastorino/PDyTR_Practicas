@@ -15,7 +15,7 @@ message LeerRequest {
 message LeerResponse {
     bytes bytes = 1;
     int32 bytesALeer = 2;
-    int32 byetsLeidos = 3;
+    int32 bytesLeidos = 3;
 }
 
 message EscribirRequest {

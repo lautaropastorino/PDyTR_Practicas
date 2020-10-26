@@ -18,18 +18,24 @@ public class Client {
 
       FtpServiceGrpc.FtpServiceBlockingStub stub = FtpServiceGrpc.newBlockingStub(channel);
       LeerRequest request = LeerRequest.newBuilder()
-        .setArchivo("Archivo")
-        .setPosicion(3)
-        .setBytesALeer(100)
+        .setArchivo("theDrive.mp3")
+        .setPosicion(0)
+        .setBytesALeer(5000000)
         .build();
 
       System.out.println("Iniciando consulta");
       
       
       Iterator<LeerResponse> response = stub.leer(request);
+    
+      int cont = 1;
+      while (response.hasNext()) {
+        LeerResponse r = response.next();
+        System.out.println(cont + "- Bytes leidos: " + r.getBytesLeidos());
+        cont++;
+      }
+      
 
-      System.out.println(response.next().getBytes());
-
-      channel.awaitTermination(5, TimeUnit.SECONDS);
+      channel.shutdownNow();
     }
 }

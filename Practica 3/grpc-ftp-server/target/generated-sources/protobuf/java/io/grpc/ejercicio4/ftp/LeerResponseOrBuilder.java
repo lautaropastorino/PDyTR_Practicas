@@ -20,8 +20,8 @@ public interface LeerResponseOrBuilder extends
   int getBytesALeer();
 
   /**
-   * <code>int32 byetsLeidos = 3;</code>
-   * @return The byetsLeidos.
+   * <code>int32 bytesLeidos = 3;</code>
+   * @return The bytesLeidos.
    */
-  int getByetsLeidos();
+  int getBytesLeidos();
 }

@@ -61,7 +61,7 @@ private static final long serialVersionUID = 0L;
           }
           case 24: {
 
-            byetsLeidos_ = input.readInt32();
+            bytesLeidos_ = input.readInt32();
             break;
           }
           default: {
@@ -118,15 +118,15 @@ private static final long serialVersionUID = 0L;
     return bytesALeer_;
   }
 
-  public static final int BYETSLEIDOS_FIELD_NUMBER = 3;
-  private int byetsLeidos_;
+  public static final int BYTESLEIDOS_FIELD_NUMBER = 3;
+  private int bytesLeidos_;
   /**
-   * <code>int32 byetsLeidos = 3;</code>
-   * @return The byetsLeidos.
+   * <code>int32 bytesLeidos = 3;</code>
+   * @return The bytesLeidos.
    */
   @java.lang.Override
-  public int getByetsLeidos() {
-    return byetsLeidos_;
+  public int getBytesLeidos() {
+    return bytesLeidos_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -149,8 +149,8 @@ private static final long serialVersionUID = 0L;
     if (bytesALeer_ != 0) {
       output.writeInt32(2, bytesALeer_);
     }
-    if (byetsLeidos_ != 0) {
-      output.writeInt32(3, byetsLeidos_);
+    if (bytesLeidos_ != 0) {
+      output.writeInt32(3, bytesLeidos_);
     }
     unknownFields.writeTo(output);
   }
@@ -169,9 +169,9 @@ private static final long serialVersionUID = 0L;
       size += com.google.protobuf.CodedOutputStream
         .computeInt32Size(2, bytesALeer_);
     }
-    if (byetsLeidos_ != 0) {
+    if (bytesLeidos_ != 0) {
       size += com.google.protobuf.CodedOutputStream
-        .computeInt32Size(3, byetsLeidos_);
+        .computeInt32Size(3, bytesLeidos_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -192,8 +192,8 @@ private static final long serialVersionUID = 0L;
         .equals(other.getBytes())) return false;
     if (getBytesALeer()
         != other.getBytesALeer()) return false;
-    if (getByetsLeidos()
-        != other.getByetsLeidos()) return false;
+    if (getBytesLeidos()
+        != other.getBytesLeidos()) return false;
     if (!unknownFields.equals(other.unknownFields)) return false;
     return true;
   }
@@ -209,8 +209,8 @@ private static final long serialVersionUID = 0L;
     hash = (53 * hash) + getBytes().hashCode();
     hash = (37 * hash) + BYTESALEER_FIELD_NUMBER;
     hash = (53 * hash) + getBytesALeer();
-    hash = (37 * hash) + BYETSLEIDOS_FIELD_NUMBER;
-    hash = (53 * hash) + getByetsLeidos();
+    hash = (37 * hash) + BYTESLEIDOS_FIELD_NUMBER;
+    hash = (53 * hash) + getBytesLeidos();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -348,7 +348,7 @@ private static final long serialVersionUID = 0L;
 
       bytesALeer_ = 0;
 
-      byetsLeidos_ = 0;
+      bytesLeidos_ = 0;
 
       return this;
     }
@@ -378,7 +378,7 @@ private static final long serialVersionUID = 0L;
       io.grpc.ejercicio4.ftp.LeerResponse result = new io.grpc.ejercicio4.ftp.LeerResponse(this);
       result.bytes_ = bytes_;
       result.bytesALeer_ = bytesALeer_;
-      result.byetsLeidos_ = byetsLeidos_;
+      result.bytesLeidos_ = bytesLeidos_;
       onBuilt();
       return result;
     }
@@ -433,8 +433,8 @@ private static final long serialVersionUID = 0L;
       if (other.getBytesALeer() != 0) {
         setBytesALeer(other.getBytesALeer());
       }
-      if (other.getByetsLeidos() != 0) {
-        setByetsLeidos(other.getByetsLeidos());
+      if (other.getBytesLeidos() != 0) {
+        setBytesLeidos(other.getBytesLeidos());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -530,33 +530,33 @@ private static final long serialVersionUID = 0L;
       return this;
     }
 
-    private int byetsLeidos_ ;
+    private int bytesLeidos_ ;
     /**
-     * <code>int32 byetsLeidos = 3;</code>
-     * @return The byetsLeidos.
+     * <code>int32 bytesLeidos = 3;</code>
+     * @return The bytesLeidos.
      */
     @java.lang.Override
-    public int getByetsLeidos() {
-      return byetsLeidos_;
+    public int getBytesLeidos() {
+      return bytesLeidos_;
     }
     /**
-     * <code>int32 byetsLeidos = 3;</code>
-     * @param value The byetsLeidos to set.
+     * <code>int32 bytesLeidos = 3;</code>
+     * @param value The bytesLeidos to set.
      * @return This builder for chaining.
      */
-    public Builder setByetsLeidos(int value) {
+    public Builder setBytesLeidos(int value) {
       
-      byetsLeidos_ = value;
+      bytesLeidos_ = value;
       onChanged();
       return this;
     }
     /**
-     * <code>int32 byetsLeidos = 3;</code>
+     * <code>int32 bytesLeidos = 3;</code>
      * @return This builder for chaining.
      */
-    public Builder clearByetsLeidos() {
+    public Builder clearBytesLeidos() {
       
-      byetsLeidos_ = 0;
+      bytesLeidos_ = 0;
       onChanged();
       return this;
     }
