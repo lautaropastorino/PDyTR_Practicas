@@ -1,0 +1,34 @@
+syntax="proto3";
+
+option java_multiple_files = true;
+option java_outer_classname = "FtpServiceProto";
+option java_package = "io.grpc.ejercicio4.ftp";
+
+package pdytr.ejercicio4.grpc;
+
+message LeerRequest {
+    string archivo = 1;
+    int32 posicion = 2;
+    int32 bytesALeer = 3;
+}
+
+message LeerResponse {
+    bytes bytes = 1;
+    int32 bytesALeer = 2;
+    int32 byetsLeidos = 3;
+}
+
+message EscribirRequest {
+    string archivo = 1;
+    int32 bytesAEscribir = 2;
+    bytes data = 3;
+}
+
+message EscribirResponse {
+    int32 bytesEscritos = 1;
+}
+
+service FtpService {
+    rpc Leer(LeerRequest) returns (stream LeerResponse);
+    rpc Escribir(stream EscribirRequest) returns (EscribirResponse);
+}
