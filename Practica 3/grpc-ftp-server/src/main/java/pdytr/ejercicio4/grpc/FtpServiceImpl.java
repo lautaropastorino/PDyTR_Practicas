@@ -53,7 +53,7 @@ public class FtpServiceImpl extends FtpServiceGrpc.FtpServiceImplBase {
                 // Me fijo si tengo que hacer un stream mas de menos de STREAM_SIZE bytes
                 int resto = length % STREAM_SIZE;
 
-                System.out.println("Se requieren " + streams + " streams");
+                System.out.println("Se requieren " + streams + " streams de " + STREAM_SIZE + " bytes.");
                 System.out.println("Y sobran " + resto + " bytes");
                 for (int i = 0; i < streams; i++) {
                     ByteBuffer buf = ByteBuffer.allocate(STREAM_SIZE);
