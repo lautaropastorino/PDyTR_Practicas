@@ -51,31 +51,29 @@ public class Client {
         channel.shutdownNow();
     }
 
-    private static StreamObserver<EscribirResponse> getEscribirResponseObserver() {
-        return new StreamObserver<EscribirResponse> () {
-            @Override
-            public void onNext(EscribirResponse response) {
-                System.out.println(response);
-            }
-            @Override
-            public void onCompleted() {
-                System.out.println("Fin del stream");
-            }
-            @Override
-            public void onError(Throwable t) {
-                System.out.println("Error: " + t);
-            }
-        };
+    private static class EscribirResponseObserver implements StreamObserver<EscribirResponse> {
+        @Override
+        public void onNext(EscribirResponse response) {
+            System.out.println(response);
+        }
+        @Override
+        public void onCompleted() {
+            System.out.println("Fin del stream");
+        }
+        @Override
+        public void onError(Throwable t) {
+            System.out.println("Error: " + t);
+        }
     }
 
     public static void escribir(String direccion, String puerto, String archivo, int bytesAEscribir, String dataSource) {
         final ManagedChannel channel = ManagedChannelBuilder.forTarget(String.format("%s:%s", direccion, puerto))
             .usePlaintext()
             .build();
-        FtpServiceGrpc.FtpServiceBlockingStub stub = FtpServiceGrpc.newFutureStub(channel);
-        StreamObserver<EscribirRequest> streamObserver = stub.escribir(getEscribirResponseObserver());
+        FtpServiceGrpc.FtpServiceStub stub = FtpServiceGrpc.newStub(channel);
+        StreamObserver<EscribirRequest> streamObserver = stub.escribir(new EscribirResponseObserver());
 
-        File file = new File("serverFS/"+dataSource);
+        File file = new File("clientFS/"+dataSource);
 		if (!file.exists()) {
             System.out.println("El archivo no existe");
             System.exit(1);
@@ -89,12 +87,16 @@ public class Client {
             int streams = length / STREAM_SIZE;
             int resto = length % STREAM_SIZE;
 
+            System.out.println("Se requieren " + streams + " streams de " + STREAM_SIZE + " bytes.");
+            System.out.println("Y sobran " + resto + " bytes");
+
             int posicion = 0;
             for (int i = 0; i < streams; i++) {
                 ByteBuffer buf = ByteBuffer.allocate(STREAM_SIZE);
                 for (int j = posicion; j < posicion + STREAM_SIZE; j++) {
                     buf.put(fileContents[j]);
                 }
+                buf.rewind();
                 posicion += STREAM_SIZE;
                 EscribirRequest request = EscribirRequest.newBuilder()
                         .setData(ByteString.copyFrom(buf))
@@ -109,6 +111,7 @@ public class Client {
                 for (int i = posicion; i < posicion + resto; i++) {
                     buf.put(fileContents[i]);
                 }
+                buf.rewind();
                 EscribirRequest request = EscribirRequest.newBuilder()
                         .setData(ByteString.copyFrom(buf))
                         .setBytesAEscribir(bytesAEscribir)
@@ -116,11 +119,12 @@ public class Client {
                         .build();
                 streamObserver.onNext(request);
             }
-            streamObserver.onCompleted();   
+            streamObserver.onCompleted();
+            channel.awaitTermination(1, TimeUnit.SECONDS);
+            System.exit(0);   
         } catch (Exception e) {
 			e.printStackTrace();
 		}
-
     }
 
     public static void main( String[] args ) throws Exception

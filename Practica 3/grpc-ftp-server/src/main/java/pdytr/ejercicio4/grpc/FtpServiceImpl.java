@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 
 import com.google.protobuf.ByteString;
 
@@ -57,12 +58,14 @@ public class FtpServiceImpl extends FtpServiceGrpc.FtpServiceImplBase {
 
                 System.out.println("Se requieren " + streams + " streams de " + STREAM_SIZE + " bytes.");
                 System.out.println("Y sobran " + resto + " bytes");
+
                 for (int i = 0; i < streams; i++) {
                     ByteBuffer buf = ByteBuffer.allocate(STREAM_SIZE);
                     for (int j = posicion; j < posicion + STREAM_SIZE; j++) {
                         buf.put(fileContents[j]);
                     }
                     posicion += STREAM_SIZE;
+                    buf.rewind();
                     LeerResponse response = LeerResponse.newBuilder()
                             .setBytes(ByteString.copyFrom(buf))
                             .setBytesALeer(bytesALeer)
@@ -77,7 +80,7 @@ public class FtpServiceImpl extends FtpServiceGrpc.FtpServiceImplBase {
                     for (int i = posicion; i < posicion + resto; i++) {
                         buf.put(fileContents[i]);
                     }
-
+                    buf.rewind();
                     LeerResponse response = LeerResponse.newBuilder()
                     .setBytes(ByteString.copyFrom(buf))
                     .setBytesALeer(bytesALeer)
@@ -96,11 +99,18 @@ public class FtpServiceImpl extends FtpServiceGrpc.FtpServiceImplBase {
     @Override
     public StreamObserver<EscribirRequest> escribir(final StreamObserver<EscribirResponse> responseObserver) {
         return new StreamObserver<EscribirRequest>() {
-            private int bytesEscritos = 0;
+            private int escritos = 0;
+            {
+                System.out.println("Pedido de escritura recibido");
+            }
 
             @Override
             public void onCompleted() {
                 System.out.println("Fin del stream");
+                EscribirResponse response = EscribirResponse.newBuilder()
+                    .setBytesEscritos(escritos)
+                    .build();
+                responseObserver.onNext(response);
                 responseObserver.onCompleted();
             }
 
@@ -130,21 +140,15 @@ public class FtpServiceImpl extends FtpServiceGrpc.FtpServiceImplBase {
                 }
 
                 aEscribir = data.toByteArray();
-                
                 try {
                     FileOutputStream out = new FileOutputStream(file, true);
                     
                     out.write(aEscribir);
                     out.flush();
                     out.close();
-                    EscribirResponse response = EscribirResponse.newBuilder()
-                        .setBytesEscritos(aEscribir.length)
-                        .build();
-                    responseObserver.onNext(response);
-                    responseObserver.onCompleted();
+                    escritos += aEscribir.length;
              
                 } catch (Exception e) {
-                    
                     e.printStackTrace();
                 }
             }

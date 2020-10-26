@@ -12,6 +12,8 @@ io/grpc/ejercicio4/ftp/FtpServiceGrpc$FtpServiceBaseDescriptorSupplier.class
 io/grpc/ejercicio4/ftp/EscribirResponse$Builder.class
 io/grpc/ejercicio4/ftp/LeerRequest.class
 io/grpc/ejercicio4/ftp/LeerResponse$1.class
+pdytr/ejercicio4/grpc/Client$EscribirResponseObserver.class
+pdytr/ejercicio4/grpc/Client$1.class
 io/grpc/ejercicio4/ftp/EscribirRequestOrBuilder.class
 io/grpc/ejercicio4/ftp/FtpServiceGrpc$MethodHandlers.class
 io/grpc/ejercicio4/ftp/FtpServiceGrpc$FtpServiceFutureStub.class
@@ -22,7 +24,9 @@ io/grpc/ejercicio4/ftp/FtpServiceGrpc.class
 pdytr/ejercicio4/grpc/FtpServiceImpl.class
 pdytr/ejercicio4/grpc/FtpServiceImpl$1.class
 io/grpc/ejercicio4/ftp/EscribirResponse$1.class
+io/grpc/ejercicio4/ftp/FtpServiceProto.class
 io/grpc/ejercicio4/ftp/LeerResponse$Builder.class
+pdytr/ejercicio4/grpc/Client.class
 io/grpc/ejercicio4/ftp/EscribirRequest$Builder.class
 io/grpc/ejercicio4/ftp/FtpServiceGrpc$FtpServiceImplBase.class
 io/grpc/ejercicio4/ftp/FtpServiceGrpc$1.class
