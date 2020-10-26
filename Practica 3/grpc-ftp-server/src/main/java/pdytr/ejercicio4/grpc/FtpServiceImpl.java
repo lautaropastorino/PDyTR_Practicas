@@ -1,8 +1,10 @@
 package pdytr.ejercicio4.grpc;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.util.Arrays;
 
 import com.google.protobuf.ByteString;
 
@@ -94,10 +96,11 @@ public class FtpServiceImpl extends FtpServiceGrpc.FtpServiceImplBase {
     @Override
     public StreamObserver<EscribirRequest> escribir(final StreamObserver<EscribirResponse> responseObserver) {
         return new StreamObserver<EscribirRequest>() {
-            int bytesEscritos = 0;
+            private int bytesEscritos = 0;
 
             @Override
             public void onCompleted() {
+                System.out.println("Fin del stream");
                 responseObserver.onCompleted();
             }
 
@@ -108,7 +111,42 @@ public class FtpServiceImpl extends FtpServiceGrpc.FtpServiceImplBase {
 
             @Override
             public void onNext(EscribirRequest request) {
-                System.out.println(request);
+                String archivo = request.getArchivo();
+                int bytesAEscribir = request.getBytesAEscribir();
+                ByteString data = request.getData();
+        
+                File file = new File("serverFS/"+archivo);
+                try {
+                    file.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                byte[] aEscribir;
+                if (bytesAEscribir < data.size()) {
+                    aEscribir = new byte[bytesAEscribir];
+                } else {
+                    aEscribir = new byte[data.size()];
+                }
+
+                aEscribir = data.toByteArray();
+                
+                try {
+                    FileOutputStream out = new FileOutputStream(file, true);
+                    
+                    out.write(aEscribir);
+                    out.flush();
+                    out.close();
+                    EscribirResponse response = EscribirResponse.newBuilder()
+                        .setBytesEscritos(aEscribir.length)
+                        .build();
+                    responseObserver.onNext(response);
+                    responseObserver.onCompleted();
+             
+                } catch (Exception e) {
+                    
+                    e.printStackTrace();
+                }
             }
         };
     }
