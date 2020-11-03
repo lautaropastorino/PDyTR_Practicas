@@ -1,0 +1,7 @@
+Servidor:
+	mvn -DskipTests package exec:java -Dexec.mainClass=pdytr.ejercicio4.grpc.App
+
+Cliente:
+	mvn -DskipTests exec:java -Dexec.mainClass=pdytr.ejercicio4.grpc.Client -Dexec.args="direccion puerto leer/escribir archivo posicion/bytesAEscribir bytesALeer/dataSource"
+
+

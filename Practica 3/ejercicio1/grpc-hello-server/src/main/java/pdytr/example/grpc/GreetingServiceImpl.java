@@ -25,8 +25,6 @@ public class GreetingServiceImpl extends GreetingServiceGrpc.GreetingServiceImpl
     // Use responseObserver to send a single response back
     responseObserver.onNext(response);
 
-    System.out.println(responseObserver);
-
     // When you are done, you must call onCompleted.
     responseObserver.onCompleted();
   }

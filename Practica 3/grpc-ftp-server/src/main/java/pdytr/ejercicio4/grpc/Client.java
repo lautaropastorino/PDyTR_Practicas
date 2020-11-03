@@ -1,6 +1,7 @@
 package pdytr.ejercicio4.grpc;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.Iterator;
@@ -23,6 +24,26 @@ public class Client {
         System.exit(1);
     }
 
+    public static void localWrite(int bytesAEscribir, ByteString data, File file) {
+        byte[] aEscribir;
+        if (bytesAEscribir < data.size()) {
+            aEscribir = new byte[bytesAEscribir];
+        } else {
+            aEscribir = new byte[data.size()];
+        }
+
+        aEscribir = data.toByteArray();
+        try {
+            FileOutputStream out = new FileOutputStream(file, true);
+            
+            out.write(aEscribir);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void leer(String direccion, String puerto, String archivo, int posicion, int bytesALeer) {
         final ManagedChannel channel = ManagedChannelBuilder.forTarget(String.format("%s:%s", direccion, puerto))
             .usePlaintext()
@@ -40,9 +61,23 @@ public class Client {
 
         Iterator<LeerResponse> response = stub.leer(request);
 
+        LeerResponse r = response.next();
+        File file = null;
+        if (r.getBytesLeidos() != 0) {
+            file = new File("clientFS/"+archivo);
+            try {
+                file.createNewFile();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        localWrite(r.getBytesLeidos(), r.getBytes(), file);
+        
         int cont = 1;
         while (response.hasNext()) {
-            LeerResponse r = response.next();
+            localWrite(r.getBytesLeidos(), r.getBytes(), file);
+            r = response.next();
             System.out.println("Lectura N: " + cont + " - Bytes leidos: " + r.getBytesLeidos());
             cont++;
         }
