@@ -5,8 +5,8 @@ pdytr/example/grpc/ClientC.class
 pdytr/example/grpc/GreetingServiceGrpc$GreetingServiceFutureStub.class
 pdytr/example/grpc/App.class
 pdytr/example/grpc/GreetingServiceGrpc$GreetingServiceImplBase.class
-pdytr/example/grpc/GreetingServiceGrpc$GreetingServiceFileDescriptorSupplier.class
 pdytr/example/grpc/GreetingServiceOuterClass$HelloRequest$Builder.class
+pdytr/example/grpc/GreetingServiceGrpc$GreetingServiceFileDescriptorSupplier.class
 pdytr/example/grpc/GreetingServiceOuterClass$HelloResponseOrBuilder.class
 pdytr/example/grpc/GreetingServiceOuterClass$HelloResponse$1.class
 pdytr/example/grpc/GreetingServiceOuterClass$HelloResponse.class

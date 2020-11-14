@@ -8,11 +8,13 @@ public class Agente extends Agent {
 
     public void setup() {
         Location origen = here();
+        System.out.println("========================================================");
         System.out.println("Soy " + getLocalName() + " y estoy en " + origen.getID());
         try {
             ContainerID destino = new ContainerID("Container-" + index, null);
             index++;
-	        System.out.println("Migrando el agente a " + destino.getID());
+            System.out.println("Migrando el agente a " + destino.getID());
+            System.out.println("========================================================");
 	        doMove(destino);
         } catch (Exception e) {
             System.out.println("\n\n\nNo fue posible migrar el agente\n\n\n");
