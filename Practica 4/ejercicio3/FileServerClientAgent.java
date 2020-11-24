@@ -26,9 +26,9 @@ public class FileServerClientAgent extends Agent {
 		if (accion.equals("read")) {
 			this.leer(args);
 		} else if (accion.equals("write")) {
-			//this.escribir(args);
+			this.escribir(args);
 		} else if (accion.equals("copy")) {
-			//this.copiar(args);
+			this.copiar(args);
 		}
 	}
 
@@ -84,7 +84,7 @@ public class FileServerClientAgent extends Agent {
 					if (aLeer == 0) {
 						break;
 					}
-					
+
 					send(msg);
 					lecturas++;
 					msg_received = blockingReceive();
@@ -101,9 +101,10 @@ public class FileServerClientAgent extends Agent {
 
 	}
 
-	/* private void escribir(String[] args) {
+	private void escribir(String[] args) {
 		String archivo = args[1];
 		String container = args[2];
+		int bytesAEscribir = Integer.parseInt(args[3]);
 		System.out.println(String.format("%nPedido de escritura sobre %s recibido%n", archivo));
 
 		File file = new File("clientFS/" + archivo);
@@ -116,25 +117,41 @@ public class FileServerClientAgent extends Agent {
             // Obtengo el contenido del archivo con ese nombre
             byte[] fileContents = Files.readAllBytes(file.toPath()); 
             // Obtengo el tamanio del archivo
-            int filesize = (int) file.length();
+			int filesize = (int) file.length();
+			int streams = Math.min(filesize, bytesAEscribir) / BUFFERSIZE;
+            int resto = Math.min(filesize, bytesAEscribir) % BUFFERSIZE;
 
-            ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
-            reply.addReceiver(this.msg.getSender());
-            if (filesize >= position) {
-                // Decido si voy a leer hasta el final del archivo o hasta la posicion + bytelength
-                int length = Math.min((filesize - position), bytelength);
-                byte[] data = new byte[length];
-                int j = 0;
-                for (int i = position; i < (position + length); i++) {
-                    data[j] = fileContents[i];
-                    j++;
-                }
-                reply.addUserDefinedParameter("FS_answer","Lectura exitosa");
-                reply.setByteSequenceContent(data);
-            } else {
-                reply.addUserDefinedParameter("FS_answer","La posicion enviada es mayor al tamanio del archivo");
-            }
-            send(reply);
+			AID dest = new AID("FSA", AID.ISLOCALNAME);
+			ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
+			msg.addReceiver(dest);
+			msg.addUserDefinedParameter("FS_container", container);
+			msg.addUserDefinedParameter("FS_action", "write");
+			msg.addUserDefinedParameter("FS_filename", archivo);
+		
+			int aEscribir = Math.min(bytesAEscribir, BUFFERSIZE);
+			msg.addUserDefinedParameter("FS_length", Integer.toString(aEscribir));
+			
+			int posicionArchivo = 0;
+			for (int i = 0; i < streams; i++) {
+				byte[] data = new byte[BUFFERSIZE];
+				for (int j = 0; j < BUFFERSIZE; j++) {
+					data[j] = fileContents[posicionArchivo];
+					posicionArchivo++;
+				}
+				msg.setByteSequenceContent(data);
+				send(msg);
+			}
+
+			msg.clearUserDefinedParameter("FS_length");
+			msg.addUserDefinedParameter("FS_length", Integer.toString(resto));
+
+			byte[] data = new byte[resto];
+			for (int i = 0; i < resto; i++) {
+				data[i] = fileContents[posicionArchivo];
+				posicionArchivo++;
+			}
+			msg.setByteSequenceContent(data);
+			send(msg);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -143,7 +160,7 @@ public class FileServerClientAgent extends Agent {
 	private void copiar(String[] args) {
 
 	}
- */
+
 	/* protected void afterMove() {
 		Location origen = here();
 		System.out.println("\n\nHola, agente migrado con nombre local " + getLocalName());
