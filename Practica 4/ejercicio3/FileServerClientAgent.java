@@ -22,13 +22,14 @@ public class FileServerClientAgent extends Agent {
 		// Object[] args = getArguments();
 		// this.filename = args[0].toString();  
 		this.filename = "jade.pptx";
-		try {
+		/* try {
 			ContainerID destino = new ContainerID("Main-Container", null);
 			System.out.println("Migrando el agente a " + destino.getID());
 			doMove(destino);
 		} catch (Exception e) {
 			System.out.println("\n\n\nNo fue posible migrar el agente\n\n\n");
-		}
+		} */
+		this.afterMove();
 	}
 
 	protected void afterMove() {
@@ -45,6 +46,7 @@ public class FileServerClientAgent extends Agent {
 		// remote.readFile(this.filename, position, bufferSize);
 		AID dest = new AID("FSA", AID.ISLOCALNAME);
 		ACLMessage msg = new ACLMessage( ACLMessage.INFORM );
+		msg.addUserDefinedParameter("FS_container", "Container-1");
 		msg.addUserDefinedParameter("FS_action","read");
 		msg.addUserDefinedParameter("FS_filename",this.filename);
 		msg.addUserDefinedParameter("FS_position",Integer.toString(position));
