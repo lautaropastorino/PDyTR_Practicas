@@ -42,7 +42,7 @@ public class FileServerAgent extends Agent {
         if (!(file.exists())) {
             System.out.println("El archivo no existe");
             ACLMessage reply = new ACLMessage( ACLMessage.INFORM );
-            reply.addReceiver( this.msg.getSender() );
+            reply.addReceiver(this.msg.getSender());
             reply.addUserDefinedParameter("FS_answer","El archivo no existe");
             send(reply);
             return;
@@ -54,7 +54,7 @@ public class FileServerAgent extends Agent {
             // Obtengo el tamanio del archivo
             int filesize = (int) file.length();
 
-            ACLMessage reply = new ACLMessage( ACLMessage.INFORM );
+            ACLMessage reply = new ACLMessage(ACLMessage.INFORM);
             reply.addReceiver(this.msg.getSender());
             if (filesize >= position) {
                 // Decido si voy a leer hasta el final del archivo o hasta la posicion + bytelength
@@ -70,7 +70,6 @@ public class FileServerAgent extends Agent {
             } else {
                 reply.addUserDefinedParameter("FS_answer","La posicion enviada es mayor al tamanio del archivo");
             }
-            // reply.send();
             send(reply);
         } catch (Exception e) {
             e.printStackTrace();
