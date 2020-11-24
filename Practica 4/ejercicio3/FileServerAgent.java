@@ -11,6 +11,7 @@ import java.util.Arrays;
 public class FileServerAgent extends Agent {
 
     private ACLMessage msg = null;
+	private boolean trasladado = false;
 
     // Ejecutado por unica vez en la creacion
     public void setup() {
@@ -24,8 +25,10 @@ public class FileServerAgent extends Agent {
         String container = msg.getUserDefinedParameter("FS_container");
         if (!here().getID().split("@")[0].equals(container)) { // Si no estoy en el container del archivo
             ContainerID destino = new ContainerID(container, null);
+            trasladado = true;
             doMove(destino);
         } else {
+            trasladado = false;
             this.afterMove();
         }
     }
@@ -52,7 +55,7 @@ public class FileServerAgent extends Agent {
             int filesize = (int) file.length();
 
             ACLMessage reply = new ACLMessage( ACLMessage.INFORM );
-            reply.addReceiver( this.msg.getSender() );
+            reply.addReceiver(this.msg.getSender());
             if (filesize >= position) {
                 // Decido si voy a leer hasta el final del archivo o hasta la posicion + bytelength
                 int length = Math.min((filesize - position), bytelength);
@@ -118,8 +121,11 @@ public class FileServerAgent extends Agent {
         
     protected void afterMove() {
         Location origen = here();
-        System.out.println(String.format("%n%s trasladado a %s", getName(), origen.getID()));
-
+        
+        if (trasladado) {
+            System.out.println(String.format("%n%s trasladado a %s", getName(), origen.getID()));
+        }
+        
         File directory = new File("serverFS/");
         if (! directory.exists()){
             directory.mkdir();

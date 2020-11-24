@@ -70,6 +70,7 @@ public class FileServerClientAgent extends Agent {
 			try {
 				FileOutputStream localWrite = new FileOutputStream(file);
 				ACLMessage msg_writing = new ACLMessage( ACLMessage.INFORM );
+				msg_writing.addUserDefinedParameter("FS_container", "Container-1");
 				msg_writing.addUserDefinedParameter("FS_action","write");
 				msg_writing.addUserDefinedParameter("FS_filename","CopyOf" + this.filename);
 				msg_writing.addReceiver( dest );
