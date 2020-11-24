@@ -38,7 +38,7 @@ public class FileServerAgent extends Agent {
         int position = Integer.parseInt(this.msg.getUserDefinedParameter("FS_position"));
         int bytelength = Integer.parseInt(this.msg.getUserDefinedParameter("FS_length"));
 
-        File file = new File("serverFS/"+filename);
+        File file = new File(here().getID().split("@")[0] + "FS/" + filename);
         if (!(file.exists())) {
             System.out.println("El archivo no existe");
             ACLMessage reply = new ACLMessage( ACLMessage.INFORM );
@@ -89,7 +89,7 @@ public class FileServerAgent extends Agent {
         byte[] data = this.msg.getByteSequenceContent();
 
         int escritos = 0;
-        File file = new File("serverFS/"+filename);
+        File file = new File(here().getID().split("@")[0] + "FS/" +filename);
 
         try {
             // Si no existe el archivo lo creo
@@ -125,8 +125,8 @@ public class FileServerAgent extends Agent {
         if (trasladado) {
             System.out.println(String.format("%n%s trasladado a %s", getName(), origen.getID()));
         }
-        
-        File directory = new File("serverFS/");
+
+        File directory = new File(here().getID().split("@")[0] + "FS/");
         if (! directory.exists()){
             directory.mkdir();
             System.out.println("Directorio serverFS creado\n");
