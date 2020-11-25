@@ -70,7 +70,7 @@ public class FileServerClientAgent extends Agent {
 				System.out.println(String.format("%nLeyendo archivo...%n"));
 				int lecturas = 0;
 				System.out.println(lecturas + ": " + leidos + " bytes leidos.");
-				while (leidos > 0) {
+				while (leidos == BUFFERSIZE) {
 					localWrite.write(dataRead);
 					position += leidos;
 					msg.clearUserDefinedParameter("FS_position");
@@ -159,24 +159,17 @@ public class FileServerClientAgent extends Agent {
 
 	private void copiar(String[] args) {
 
-	}
-
-	/* protected void afterMove() {
-		Location origen = here();
-		System.out.println("\n\nHola, agente migrado con nombre local " + getLocalName());
-		System.out.println("Y nombre completo... " + getName());
-		System.out.println("Y en location " + origen.getID() + "\n\n");
-
+		String archivo = args[1];
+		String container = args[2];
 		int position = 0;
-		int bufferSize = 4096;
 
 		AID dest = new AID("FSA", AID.ISLOCALNAME);
 		ACLMessage msg = new ACLMessage( ACLMessage.INFORM );
-		msg.addUserDefinedParameter("FS_container", "Container-1");
+		msg.addUserDefinedParameter("FS_container", container);
 		msg.addUserDefinedParameter("FS_action","read");
-		msg.addUserDefinedParameter("FS_filename",this.filename);
+		msg.addUserDefinedParameter("FS_filename",archivo);
 		msg.addUserDefinedParameter("FS_position",Integer.toString(position));
-		msg.addUserDefinedParameter("FS_length",Integer.toString(bufferSize));
+		msg.addUserDefinedParameter("FS_length",Integer.toString(BUFFERSIZE));
 		msg.addReceiver( dest );
 		send(msg);
 		ACLMessage msg_received = blockingReceive();
@@ -185,25 +178,23 @@ public class FileServerClientAgent extends Agent {
 			byte[] dataRead = msg_received.getByteSequenceContent();
 			int leidos = dataRead.length;
 
-			File file = new File("clientFS/"+filename);
+			File file = new File("clientFS/"+archivo);
 			try {
 				file.createNewFile();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			System.out.println("Directorio clientFS/ creado");
 
 			try {
 				FileOutputStream localWrite = new FileOutputStream(file);
 				ACLMessage msg_writing = new ACLMessage( ACLMessage.INFORM );
-				msg_writing.addUserDefinedParameter("FS_container", "Container-1");
+				msg_writing.addUserDefinedParameter("FS_container", container);
 				msg_writing.addUserDefinedParameter("FS_action","write");
-				msg_writing.addUserDefinedParameter("FS_filename","CopyOf" + this.filename);
+				msg_writing.addUserDefinedParameter("FS_filename","CopyOf" + archivo);
 				msg_writing.addReceiver(dest);
 
 				while (leidos > 0) {
 					localWrite.write(dataRead);
-					// remote.writeFile("CopyOf" + filename, leidos, dataRead);
 					msg_writing.addUserDefinedParameter("FS_length",Integer.toString(leidos));
                     msg_writing.setByteSequenceContent(dataRead);
 					send(msg_writing);
@@ -211,7 +202,6 @@ public class FileServerClientAgent extends Agent {
 	
 					msg_writing.clearUserDefinedParameter("FS_length");
 					position += leidos;
-					// dataRead = remote.readFile(filename, position, bufferSize);
 					msg.clearUserDefinedParameter("FS_position");
 					msg.addUserDefinedParameter("FS_position",Integer.toString(position));
 					send(msg);
@@ -228,5 +218,5 @@ public class FileServerClientAgent extends Agent {
 		} else {
 			System.out.println("El archivo no existe...");
 		}
-	} */
+	}
 }
