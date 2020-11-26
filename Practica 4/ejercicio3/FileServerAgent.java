@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class FileServerAgent extends Agent {
 
     private ACLMessage msg = null;
-	private boolean trasladado = false;
+    private boolean trasladado = false;
 
     // Ejecutado por unica vez en la creacion
     public void setup() {
