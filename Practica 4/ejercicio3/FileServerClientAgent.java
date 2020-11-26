@@ -78,7 +78,7 @@ public class FileServerClientAgent extends Agent {
 				System.out.println(String.format("%nLeyendo archivo...%n"));
 				int lecturas = 0;
 				System.out.println(lecturas + ": " + leidos + " bytes leidos.");
-				while (leidos == BUFFERSIZE) {
+				while (leidos > 0) {
 					localWrite.write(dataRead);
 					position += leidos;
 					msg.clearUserDefinedParameter("FS_position");
